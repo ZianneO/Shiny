@@ -90,14 +90,24 @@ server <- function(input, output) {
     # 
     
     output$distPlot <- renderPlot({
-        plot(dataInput()$x,dataInput()$y)
+        plot(dataInput()$x,dataInput()$y, xlab = "X", ylab = "Y")
     })
-    
+
+    lmdata <- reactiveValues()
+
+    update_lm <- function() {
+        lmdata$model <- lm(y ~ x, data = dataInput())
+    }
+
+    observeEvent(input$Push, (update_lm()})
+                 
     output$lmtPlot <- renderPlot({
-        plot(dataInput()$x,dataInput()$y)
+        plot(dataInput()$x,dataInput()$y, , xlab = "X", ylab = "Y")
+        abline(lmdata$model)
     })
-    
-    
+
+    output$txt <- renderText((summary()})             
+                 
     output$contents <- renderTable({
         
         # input$file1 will be NULL initially. After the user selects
