@@ -1,4 +1,4 @@
-#
+this is the code template with my additions in it #
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 #
@@ -97,6 +97,8 @@ server <- function(input, output) {
 
     update_lm <- function() {
         lmdata$model <- lm(y ~ x, data = dataInput())
+        lmdata$rsq <- summary(lmdata$model)$r.squared
+        lmdata$coef <- summary(lmdata)
     }
 
     observeEvent(input$Push, (update_lm()})
