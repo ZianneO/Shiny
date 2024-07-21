@@ -98,17 +98,17 @@ server <- function(input, output) {
     update_lm <- function() {
         lmdata$model <- lm(y ~ x, data = dataInput())
         lmdata$rsq <- summary(lmdata$model)$r.squared
-        lmdata$coef <- summary(lmdata)
+        lmdata$coef <- summary(lmdata$model)$coefficient
     }
 
     observeEvent(input$Push, (update_lm()})
                  
-    output$lmtPlot <- renderPlot({
+    output$lmPlot <- renderPlot({
         plot(dataInput()$x,dataInput()$y, , xlab = "X", ylab = "Y")
         abline(lmdata$model)
     })
 
-    output$txt <- renderText((summary()})             
+    output$txt <- renderText({paste("R Squared Value:", lmdata$rsq, "Coefficient Values:", lmd)})             
                  
     output$contents <- renderTable({
         
