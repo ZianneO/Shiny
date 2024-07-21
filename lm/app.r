@@ -62,6 +62,7 @@ ui <- fluidPage(
            plotOutput("distPlot"),
            plotOutput("lmPlot"),
            tableOutput("contents")
+            verbatimTextOutput("Text")
         )
     )
 )
@@ -69,6 +70,8 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
+    lmdata <- reactiveValues()
+    
     dataInput <- reactive({
         req(input$file1)
         
@@ -77,6 +80,10 @@ server <- function(input, output) {
                        sep = input$sep,
                        quote = input$quote)
         return(df)
+    })
+
+    observeEvent(input$Push, (update_lm()})
+
     })
     
     # output$distPlot <- renderPlot({
@@ -93,16 +100,15 @@ server <- function(input, output) {
         plot(dataInput()$x,dataInput()$y, xlab = "X", ylab = "Y")
     })
 
-    lmdata <- reactiveValues()
+    
 
-    update_lm <- function() {
+    update_lm <- function(){
         lmdata$model <- lm(y ~ x, data = dataInput())
         lmdata$rsq <- summary(lmdata$model)$r.squared
         lmdata$coef <- summary(lmdata$model)$coefficient
     }
 
-    observeEvent(input$Push, (update_lm()})
-                 
+    
     output$lmPlot <- renderPlot({
         plot(dataInput()$x,dataInput()$y, 
              main = "Distribution Plot",
@@ -118,11 +124,11 @@ server <- function(input, output) {
              ylab = "Y",
             col = "black",
             border = "white"
-            abline(lmdata$model, col = 'purple')
+            abline(lmdata$model, col = 'red')
         
     })
 
-    output$txt <- renderText({paste("R Squared Value:", lmdata$rsq, "Coefficient Values:", lmd)})             
+    output$txt <- renderText({"R Squared Value =", lmdata$rsq, "Coefficients :", lmdata$coef})             
                  
     output$contents <- renderTable({
         
