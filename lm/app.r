@@ -104,8 +104,22 @@ server <- function(input, output) {
     observeEvent(input$Push, (update_lm()})
                  
     output$lmPlot <- renderPlot({
-        plot(dataInput()$x,dataInput()$y, , xlab = "X", ylab = "Y")
-        abline(lmdata$model)
+        plot(dataInput()$x,dataInput()$y, 
+             main = "Distribution Plot",
+             xlab = "X",
+             ylab = "Y",
+            col = "black",
+            border = "white")
+
+        output$lmPlot <- renderPlot({
+        plot(dataInput()$x,dataInput()$y, 
+             main = "Linear Model Plot",
+             xlab = "X",
+             ylab = "Y",
+            col = "black",
+            border = "white"
+            abline(lmdata$model, col = 'purple')
+        
     })
 
     output$txt <- renderText({paste("R Squared Value:", lmdata$rsq, "Coefficient Values:", lmd)})             
