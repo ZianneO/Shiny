@@ -76,9 +76,13 @@ server <- function(input, output, session) {
   })
   
   update_lm <- function() {
-    lmdata$model <- lm(y ~ x, data = dataInput())
-    lmdata$rsq <- summary(lmdata$model)$r.squared
-    lmdata$coef <- summary(lmdata$model)$coefficients[, 1]
+     lm_model <- lm(y ~ x, data = dataInput())
+    lmdata$model <- lm_model
+    lmdata$rsq <- summary(lm_model)$r.squared
+    lmdata$coef <- summary(lm_model)$coefficients[, 1]
+    lmdata$slope <- coef(lm_model)[2]  # Slope
+    lmdata$intercept <- coef(lm_model)[1]  # Intercept
+    lmdata$cor <- cor(dataInput()$x, dataInput()$y)  # Correlation coefficient
   }
   
   observeEvent(input$go, {
@@ -104,10 +108,13 @@ server <- function(input, output, session) {
     abline(lmdata$model, col = 'red')
   })
   
-  output$values <- renderText({
-    paste("R-squared = ", round(lmdata$rsq, 3))
+ output$values <- renderText({
+    paste("R-squared = ", round(lmdata$rsq, 3),
+          "\nSlope = ", round(lmdata$slope, 3),
+          "\nIntercept = ", round(lmdata$intercept, 3),
+          "\nCorrelation coefficient = ", round(lmdata$cor, 3))
   })
-  
+    
   output$contents <- renderTable({
     if (input$disp == "head") {
       return(head(dataInput()))
